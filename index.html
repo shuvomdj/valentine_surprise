@@ -47,6 +47,14 @@
             animation: fadeIn 1s ease-out forwards;
         }
 
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0); }
+        }
+        .fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
         .envelope-container {
             position: relative;
             width: 300px;
@@ -125,6 +133,12 @@
             visibility: visible !important;
             opacity: 1 !important;
         }
+
+        .hidden-no {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-pink-300 via-rose-400 to-red-400 h-screen w-screen flex items-center justify-center relative overflow-hidden select-none">
@@ -167,6 +181,7 @@
                     No... 💔
                 </button>
             </div>
+            <p id="tap-counter" class="text-white/60 text-sm mt-4 font-light">Catch me if you can! 😏</p>
         </div>
     </div>
 
@@ -268,7 +283,6 @@
                 window.speechSynthesis.cancel();
 
                 const utterance = new SpeechSynthesisUtterance();
-                // Voice says the SENDER'S name (the person who sent the link)
                 utterance.text = `You are the Valentine of ${senderName}`;
                 
                 const voices = window.speechSynthesis.getVoices();
@@ -296,8 +310,12 @@
 
         const btnNo = document.getElementById('btn-no');
         const btnYes = document.getElementById('btn-yes');
+        const tapCounter = document.getElementById('tap-counter');
+        let noButtonTapCount = 0;
+        const maxTaps = 6;
         
         function initNoButtonLogic() {
+            // Track hover evasions
             document.addEventListener('mousemove', (e) => {
                 handleButtonEvade(e.clientX, e.clientY);
             });
@@ -307,10 +325,62 @@
                     handleButtonEvade(e.touches[0].clientX, e.touches[0].clientY);
                 }
             }, { passive: true });
+
+            // Track actual taps/clicks on the No button
+            btnNo.addEventListener('click', handleNoButtonTap);
+            btnNo.addEventListener('touchstart', handleNoButtonTap);
+        }
+
+        function handleNoButtonTap(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            noButtonTapCount++;
+            
+            // Update counter text
+            const remaining = maxTaps - noButtonTapCount;
+            if (remaining > 0) {
+                tapCounter.textContent = `Nice try! ${remaining} more attempts... 😅`;
+                tapCounter.classList.add('animate-pulse');
+                setTimeout(() => tapCounter.classList.remove('animate-pulse'), 500);
+            } else {
+                tapCounter.textContent = "Okay okay, you win! 💝";
+            }
+            
+            // Play funny sound
+            if (isAudioStarted) {
+                const boing = new Tone.MembraneSynth().toDestination();
+                boing.volume.value = -10;
+                boing.triggerAttackRelease("C2", "16n");
+            }
+            
+            // Hide button after max taps
+            if (noButtonTapCount >= maxTaps) {
+                btnNo.classList.add('fade-out');
+                setTimeout(() => {
+                    btnNo.classList.add('hidden-no');
+                    tapCounter.textContent = "Now click YES! ❤️";
+                    tapCounter.classList.add('text-white', 'font-bold');
+                }, 500);
+            } else {
+                // Move button away immediately when tapped
+                const rect = btnNo.getBoundingClientRect();
+                const padding = 20;
+                const maxX = window.innerWidth - rect.width - padding;
+                const maxY = window.innerHeight - rect.height - padding;
+                
+                const newX = Math.random() * (maxX - padding) + padding;
+                const newY = Math.random() * (maxY - padding) + padding;
+                
+                btnNo.style.position = 'fixed';
+                btnNo.style.left = newX + 'px';
+                btnNo.style.top = newY + 'px';
+            }
         }
 
         function handleButtonEvade(cursorX, cursorY) {
             if (page2.style.display === 'none') return;
+            if (noButtonTapCount >= maxTaps) return; // Don't evade if already hidden
 
             const rect = btnNo.getBoundingClientRect();
             const buttonCenterX = rect.left + rect.width / 2;
@@ -325,30 +395,23 @@
             if (distance < threshold && distance > 0) {
                 const normX = distX / distance;
                 const normY = distY / distance;
-
-                // Move distance - jump away from cursor
                 const moveDistance = 80;
 
-                // Calculate new position (opposite direction from cursor)
                 let newX = rect.left - normX * moveDistance;
                 let newY = rect.top - normY * moveDistance;
 
-                // Strict boundary checks to keep button ALWAYS on screen
                 const padding = 10;
                 const maxX = window.innerWidth - rect.width - padding;
                 const maxY = window.innerHeight - rect.height - padding;
 
-                // Clamp values to ensure button stays visible
                 newX = Math.max(padding, Math.min(newX, maxX));
                 newY = Math.max(padding, Math.min(newY, maxY));
 
-                // Apply new position
                 btnNo.style.position = 'fixed';
                 btnNo.style.left = newX + 'px';
                 btnNo.style.top = newY + 'px';
                 btnNo.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
                 
-                // Ensure visibility
                 btnNo.style.display = 'inline-block';
                 btnNo.style.visibility = 'visible';
                 btnNo.style.opacity = '1';
