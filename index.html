@@ -1,441 +1,405 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>For My Valentine</title>
-   <script src="https://cdn.tailwindcss.com"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-   <style>
-       body {
-           font-family: 'Poppins', sans-serif;
-           overflow: hidden;
-       }
-       .font-romantic {
-           font-family: 'Great Vibes', cursive;
-       }
-       .font-handwritten {
-           font-family: 'Dancing Script', cursive;
-       }
-       
-       @keyframes float {
-           0% { transform: translateY(0px); }
-           50% { transform: translateY(-20px); }
-           100% { transform: translateY(0px); }
-       }
-       .animate-float {
-           animation: float 6s ease-in-out infinite;
-       }
-       
-       @keyframes heartbeat {
-           0% { transform: scale(1); }
-           14% { transform: scale(1.3); }
-           28% { transform: scale(1); }
-           42% { transform: scale(1.3); }
-           70% { transform: scale(1); }
-       }
-       .animate-heartbeat {
-           animation: heartbeat 2s infinite;
-       }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Valentine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+        .font-romantic {
+            font-family: 'Great Vibes', cursive;
+        }
+        .font-handwritten {
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+        .animate-heartbeat {
+            animation: heartbeat 2s infinite;
+        }
 
-       @keyframes fadeIn {
-           from { opacity: 0; transform: translateY(20px); }
-           to { opacity: 1; transform: translateY(0); }
-       }
-       .fade-in {
-           animation: fadeIn 1s ease-out forwards;
-       }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
 
-       @keyframes fadeOut {
-           from { opacity: 1; transform: scale(1); }
-           to { opacity: 0; transform: scale(0); }
-       }
-       .fade-out {
-           animation: fadeOut 0.5s ease-out forwards;
-       }
+        .envelope-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .envelope-container:hover {
+            transform: scale(1.05);
+        }
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #fecaca;
+            z-index: 2;
+            transform-origin: top;
+            transition: transform 0.6s ease-in-out;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            background: linear-gradient(135deg, #fda4af 0%, #f43f5e 100%);
+        }
+        .envelope-body {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff1f2;
+            z-index: 1;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .envelope-letter {
+            position: absolute;
+            bottom: 0;
+            left: 5%;
+            width: 90%;
+            height: 90%;
+            background: white;
+            z-index: 1;
+            transition: bottom 0.6s 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+        .open .envelope-letter {
+            bottom: 50%;
+            z-index: 3;
+        }
 
-       .envelope-container {
-           position: relative;
-           width: 300px;
-           height: 200px;
-           cursor: pointer;
-           transition: transform 0.3s;
-       }
-       .envelope-container:hover {
-           transform: scale(1.05);
-       }
-       .envelope-flap {
-           position: absolute;
-           top: 0;
-           left: 0;
-           width: 100%;
-           height: 50%;
-           background: #fecaca;
-           z-index: 2;
-           transform-origin: top;
-           transition: transform 0.6s ease-in-out;
-           clip-path: polygon(0 0, 50% 100%, 100% 0);
-           background: linear-gradient(135deg, #fda4af 0%, #f43f5e 100%);
-       }
-       .envelope-body {
-           position: absolute;
-           bottom: 0;
-           left: 0;
-           width: 100%;
-           height: 100%;
-           background: #fff1f2;
-           z-index: 1;
-           border-radius: 0 0 10px 10px;
-           box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-       }
-       .envelope-letter {
-           position: absolute;
-           bottom: 0;
-           left: 5%;
-           width: 90%;
-           height: 90%;
-           background: white;
-           z-index: 1;
-           transition: bottom 0.6s 0.3s ease-in-out;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-       }
-       
-       .open .envelope-flap {
-           transform: rotateX(180deg);
-           z-index: 0;
-       }
-       .open .envelope-letter {
-           bottom: 50%;
-           z-index: 3;
-       }
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.4);
+            animation: floatUp linear infinite;
+            pointer-events: none;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            20% { opacity: 0.6; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
 
-       .bg-heart {
-           position: absolute;
-           color: rgba(255, 255, 255, 0.4);
-           animation: floatUp linear infinite;
-           pointer-events: none;
-       }
-       @keyframes floatUp {
-           0% { transform: translateY(100vh) scale(0); opacity: 0; }
-           20% { opacity: 0.6; }
-           80% { opacity: 0.6; }
-           100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
-       }
-
-       #btn-no {
-           transition: all 0.15s ease-out;
-           position: relative;
-       }
-   </style>
+        #btn-no {
+            transition: all 0.15s ease-out;
+            position: relative;
+            display: inline-block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-br from-pink-300 via-rose-400 to-red-400 h-screen w-screen flex items-center justify-center relative overflow-hidden select-none">
 
-   <div id="bg-hearts" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+    <div id="bg-hearts" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
 
-   <!-- PAGE 1: The Envelope -->
-   <div id="page-1" class="z-10 flex flex-col items-center justify-center text-center p-4">
-       <div class="envelope-container mb-8 animate-float" onclick="openEnvelope()">
-           <div class="envelope-flap"></div>
-           <div class="envelope-letter">
-               <span class="font-romantic text-3xl text-rose-600">Open Me</span>
-           </div>
-           <div class="envelope-body flex items-center justify-center">
-               <div class="mt-12 flex flex-col items-center">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-rose-500" viewBox="0 0 20 20" fill="currentColor">
-                       <path fill-rule="evenodd" d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z" clip-rule="evenodd" />
-                   </svg>
-                   <p class="mt-2 text-rose-700 font-semibold tracking-widest text-sm uppercase">Read Mail</p>
-               </div>
-           </div>
-       </div>
-       <p class="text-white/80 font-light text-lg mt-4 animate-pulse">Tap the envelope to continue</p>
-   </div>
+    <!-- PAGE 1: The Envelope -->
+    <div id="page-1" class="z-10 flex flex-col items-center justify-center text-center p-4">
+        <div class="envelope-container mb-8 animate-float" onclick="openEnvelope()">
+            <div class="envelope-flap"></div>
+            <div class="envelope-letter">
+                <span class="font-romantic text-3xl text-rose-600">Open Me</span>
+            </div>
+            <div class="envelope-body flex items-center justify-center">
+                <div class="mt-12 flex flex-col items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-rose-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z" clip-rule="evenodd" />
+                    </svg>
+                    <p class="mt-2 text-rose-700 font-semibold tracking-widest text-sm uppercase">Read Mail</p>
+                </div>
+            </div>
+        </div>
+        <p class="text-white/80 font-light text-lg mt-4 animate-pulse">Tap the envelope to continue</p>
+    </div>
 
-   <!-- PAGE 2: The Question -->
-   <div id="page-2" class="hidden z-10 flex flex-col items-center justify-center text-center p-6 max-w-2xl w-full">
-       <div class="bg-white/20 backdrop-blur-lg p-10 rounded-3xl shadow-2xl border border-white/30 fade-in">
-           <div class="text-6xl mb-6 animate-bounce">💌</div>
-           <h1 class="font-romantic text-5xl md:text-7xl text-white mb-8 drop-shadow-lg leading-tight">
-               Will you be my Valentine?
-           </h1>
-           
-           <div class="flex flex-col md:flex-row gap-6 justify-center items-center mt-8 relative min-h-[120px]">
-               <button id="btn-yes" class="bg-white text-rose-600 font-bold py-4 px-12 rounded-full text-2xl shadow-[0_0_20px_rgba(255,255,255,0.5)] hover:scale-110 hover:shadow-[0_0_40px_rgba(255,255,255,0.8)] transition-all duration-300 transform z-20">
-                   YES! ❤️
-               </button>
+    <!-- PAGE 2: The Question -->
+    <div id="page-2" class="hidden z-10 flex flex-col items-center justify-center text-center p-6 max-w-2xl w-full">
+        <div class="bg-white/20 backdrop-blur-lg p-10 rounded-3xl shadow-2xl border border-white/30 fade-in">
+            <div class="text-6xl mb-6 animate-bounce">💌</div>
+            <h1 class="font-romantic text-5xl md:text-7xl text-white mb-8 drop-shadow-lg leading-tight">
+                Will you be my Valentine?
+            </h1>
+            
+            <div class="flex flex-col md:flex-row gap-6 justify-center items-center mt-8 relative min-h-[120px]">
+                <button id="btn-yes" class="bg-white text-rose-600 font-bold py-4 px-12 rounded-full text-2xl shadow-[0_0_20px_rgba(255,255,255,0.5)] hover:scale-110 hover:shadow-[0_0_40px_rgba(255,255,255,0.8)] transition-all duration-300 transform z-20">
+                    YES! ❤️
+                </button>
 
-               <button id="btn-no" class="bg-rose-800/50 text-white font-semibold py-3 px-8 rounded-full text-xl border border-rose-300/30 hover:bg-rose-800/70 z-10">
-                   No... 💔
-               </button>
-           </div>
-       </div>
-   </div>
+                <button id="btn-no" class="bg-rose-800/50 text-white font-semibold py-3 px-8 rounded-full text-xl border border-rose-300/30 hover:bg-rose-800/70 z-10">
+                    No... 💔
+                </button>
+            </div>
+        </div>
+    </div>
 
-   <!-- PAGE 3: Success -->
-   <div id="page-3" class="hidden z-10 flex flex-col items-center justify-center text-center p-4">
-       <div class="fade-in">
-           <div class="text-9xl mb-6 animate-heartbeat">❤️</div>
-           <h1 class="font-romantic text-6xl md:text-8xl text-white mb-4 drop-shadow-xl">
-               You are my Valentine!
-           </h1>
-           <p class="font-handwritten text-3xl text-white/90 mt-4">Forever & Always</p>
-           <p id="signature-text" class="text-white/70 mt-8 text-sm"></p>
-       </div>
-   </div>
+    <!-- PAGE 3: Success -->
+    <div id="page-3" class="hidden z-10 flex flex-col items-center justify-center text-center p-4">
+        <div class="fade-in">
+            <div class="text-9xl mb-6 animate-heartbeat">❤️</div>
+            <h1 class="font-romantic text-6xl md:text-8xl text-white mb-4 drop-shadow-xl">
+                You are my Valentine!
+            </h1>
+            <p class="font-handwritten text-3xl text-white/90 mt-4">Forever & Always</p>
+            <p id="signature-text" class="text-white/70 mt-8 text-sm"></p>
+        </div>
+    </div>
 
-   <script>
-       // URL Parameter Parsing
-       const urlParams = new URLSearchParams(window.location.search);
-       const senderName = urlParams.get('from') || 'Shuvo';
-       const receiverName = urlParams.get('to') || 'Angelina';
+    <script>
+        // URL Parameter Parsing
+        const urlParams = new URLSearchParams(window.location.search);
+        const senderName = urlParams.get('from') || 'Shuvo';
+        const receiverName = urlParams.get('to') || 'Angelina';
 
-       // Update signature text dynamically
-       document.getElementById('signature-text').textContent = `From ${senderName} to Love for ${receiverName}`;
+        // Update signature text dynamically
+        document.getElementById('signature-text').textContent = `From ${senderName} to Love for ${receiverName}`;
 
-       const bgContainer = document.getElementById('bg-hearts');
-       function createHeart() {
-           const heart = document.createElement('div');
-           heart.classList.add('bg-heart');
-           heart.innerHTML = '❤';
-           heart.style.left = Math.random() * 100 + 'vw';
-           heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-           heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-           bgContainer.appendChild(heart);
-           
-           setTimeout(() => {
-               heart.remove();
-           }, 10000);
-       }
-       setInterval(createHeart, 300);
+        const bgContainer = document.getElementById('bg-hearts');
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('bg-heart');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            bgContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 10000);
+        }
+        setInterval(createHeart, 300);
 
-       const page1 = document.getElementById('page-1');
-       const page2 = document.getElementById('page-2');
-       const page3 = document.getElementById('page-3');
+        const page1 = document.getElementById('page-1');
+        const page2 = document.getElementById('page-2');
+        const page3 = document.getElementById('page-3');
 
-       function openEnvelope() {
-           const envelope = document.querySelector('.envelope-container');
-           envelope.classList.add('open');
-           
-           playPaperSound();
+        function openEnvelope() {
+            const envelope = document.querySelector('.envelope-container');
+            envelope.classList.add('open');
+            
+            playPaperSound();
 
-           setTimeout(() => {
-               page1.style.display = 'none';
-               page2.style.display = 'flex';
-               page2.classList.remove('hidden');
-               initNoButtonLogic();
-           }, 1500);
-       }
+            setTimeout(() => {
+                page1.style.display = 'none';
+                page2.style.display = 'flex';
+                page2.classList.remove('hidden');
+                initNoButtonLogic();
+            }, 1500);
+        }
 
-       let synth;
-       let isAudioStarted = false;
+        let synth;
+        let isAudioStarted = false;
 
-       async function initAudio() {
-           if (!isAudioStarted) {
-               await Tone.start();
-               synth = new Tone.PolySynth(Tone.Synth).toDestination();
-               synth.volume.value = -5;
-               isAudioStarted = true;
-           }
-       }
+        async function initAudio() {
+            if (!isAudioStarted) {
+                await Tone.start();
+                synth = new Tone.PolySynth(Tone.Synth).toDestination();
+                synth.volume.value = -5;
+                isAudioStarted = true;
+            }
+        }
 
-       function playPaperSound() {
-           initAudio().then(() => {
-               const noise = new Tone.NoiseSynth({
-                   noise: { type: 'brown' },
-                   envelope: { attack: 0.01, decay: 0.3, sustain: 0 }
-               }).toDestination();
-               noise.volume.value = -10;
-               noise.triggerAttackRelease("8n");
-           });
-       }
+        function playPaperSound() {
+            initAudio().then(() => {
+                const noise = new Tone.NoiseSynth({
+                    noise: { type: 'brown' },
+                    envelope: { attack: 0.01, decay: 0.3, sustain: 0 }
+                }).toDestination();
+                noise.volume.value = -10;
+                noise.triggerAttackRelease("8n");
+            });
+        }
 
-       function playSuccessMusic() {
-           initAudio().then(() => {
-               const now = Tone.now();
-               synth.triggerAttackRelease("C4", "8n", now);
-               synth.triggerAttackRelease("E4", "8n", now + 0.2);
-               synth.triggerAttackRelease("G4", "8n", now + 0.4);
-               synth.triggerAttackRelease("C5", "2n", now + 0.6);
-               
-               synth.triggerAttackRelease("F4", "8n", now + 1.0);
-               synth.triggerAttackRelease("A4", "8n", now + 1.2);
-               synth.triggerAttackRelease("C5", "8n", now + 1.4);
-               synth.triggerAttackRelease("F5", "2n", now + 1.6);
-           });
-       }
+        function playSuccessMusic() {
+            initAudio().then(() => {
+                const now = Tone.now();
+                synth.triggerAttackRelease("C4", "8n", now);
+                synth.triggerAttackRelease("E4", "8n", now + 0.2);
+                synth.triggerAttackRelease("G4", "8n", now + 0.4);
+                synth.triggerAttackRelease("C5", "2n", now + 0.6);
+                
+                synth.triggerAttackRelease("F4", "8n", now + 1.0);
+                synth.triggerAttackRelease("A4", "8n", now + 1.2);
+                synth.triggerAttackRelease("C5", "8n", now + 1.4);
+                synth.triggerAttackRelease("F5", "2n", now + 1.6);
+            });
+        }
 
-       function speakLoveMessage() {
-           if ('speechSynthesis' in window) {
-               window.speechSynthesis.cancel();
+        function speakLoveMessage() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
 
-               const utterance = new SpeechSynthesisUtterance();
-               utterance.text = `You are the Valentine of ${senderName}`;
-               
-               const voices = window.speechSynthesis.getVoices();
-               const preferredVoice = voices.find(voice => 
-                   voice.name.includes('Female') || 
-                   voice.name.includes('Samantha') || 
-                   voice.name.includes('Google US English')
-               );
-               
-               if (preferredVoice) {
-                   utterance.voice = preferredVoice;
-               }
+                const utterance = new SpeechSynthesisUtterance();
+                // Voice says the SENDER'S name (the person who sent the link)
+                utterance.text = `You are the Valentine of ${senderName}`;
+                
+                const voices = window.speechSynthesis.getVoices();
+                const preferredVoice = voices.find(voice => 
+                    voice.name.includes('Female') || 
+                    voice.name.includes('Samantha') || 
+                    voice.name.includes('Google US English')
+                );
+                
+                if (preferredVoice) {
+                    utterance.voice = preferredVoice;
+                }
 
-               utterance.rate = 0.9;
-               utterance.pitch = 1.1;
-               utterance.volume = 1;
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                utterance.volume = 1;
 
-               window.speechSynthesis.speak(utterance);
-           }
-       }
+                window.speechSynthesis.speak(utterance);
+            }
+        }
 
-       if (speechSynthesis.onvoiceschanged !== undefined) {
-           speechSynthesis.onvoiceschanged = () => {};
-       }
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => {};
+        }
 
-       const btnNo = document.getElementById('btn-no');
-       const btnYes = document.getElementById('btn-yes');
-       let noButtonClickCount = 0;
-       const maxClicks = 6;
-       let isNoButtonHidden = false;
-       
-       function initNoButtonLogic() {
-           // Mouse move - evade cursor
-           document.addEventListener('mousemove', (e) => {
-               if (!isNoButtonHidden) {
-                   handleButtonEvade(e.clientX, e.clientY);
-               }
-           });
+        const btnNo = document.getElementById('btn-no');
+        const btnYes = document.getElementById('btn-yes');
+        
+        function initNoButtonLogic() {
+            document.addEventListener('mousemove', (e) => {
+                handleButtonEvade(e.clientX, e.clientY);
+            });
 
-           // Touch move - evade finger
-           document.addEventListener('touchmove', (e) => {
-               if (!isNoButtonHidden && e.touches.length > 0) {
-                   handleButtonEvade(e.touches[0].clientX, e.touches[0].clientY);
-               }
-           }, { passive: true });
+            document.addEventListener('touchmove', (e) => {
+                if(e.touches.length > 0) {
+                    handleButtonEvade(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+        }
 
-           // Click/tap counter
-           btnNo.addEventListener('click', handleNoButtonClick);
-           btnNo.addEventListener('touchend', handleNoButtonClick);
-       }
+        function handleButtonEvade(cursorX, cursorY) {
+            if (page2.style.display === 'none') return;
 
-       function handleNoButtonClick(e) {
-           if (isNoButtonHidden) return;
-           
-           e.preventDefault();
-           e.stopPropagation();
-           
-           noButtonClickCount++;
-           
-           // Play sound
-           if (isAudioStarted) {
-               const clickSound = new Tone.MembraneSynth().toDestination();
-               clickSound.volume.value = -15;
-               clickSound.triggerAttackRelease("D2", "16n");
-           }
-           
-           // Hide after max clicks
-           if (noButtonClickCount >= maxClicks) {
-               isNoButtonHidden = true;
-               btnNo.classList.add('fade-out');
-               setTimeout(() => {
-                   btnNo.style.display = 'none';
-               }, 500);
-           }
-       }
+            const rect = btnNo.getBoundingClientRect();
+            const buttonCenterX = rect.left + rect.width / 2;
+            const buttonCenterY = rect.top + rect.height / 2;
 
-       function handleButtonEvade(cursorX, cursorY) {
-           const rect = btnNo.getBoundingClientRect();
-           const buttonCenterX = rect.left + rect.width / 2;
-           const buttonCenterY = rect.top + rect.height / 2;
+            const distX = cursorX - buttonCenterX;
+            const distY = cursorY - buttonCenterY;
+            const distance = Math.sqrt(distX * distX + distY * distY);
 
-           const distX = cursorX - buttonCenterX;
-           const distY = cursorY - buttonCenterY;
-           const distance = Math.sqrt(distX * distX + distY * distY);
+            const threshold = 120;
 
-           const threshold = 100;
+            if (distance < threshold && distance > 0) {
+                const normX = distX / distance;
+                const normY = distY / distance;
 
-           if (distance < threshold && distance > 0) {
-               // Calculate direction away from cursor
-               const angle = Math.atan2(distY, distX);
-               const moveDistance = 150;
+                // Move distance - jump away from cursor
+                const moveDistance = 80;
 
-               // New position (opposite to cursor)
-               let newX = rect.left - Math.cos(angle) * moveDistance;
-               let newY = rect.top - Math.sin(angle) * moveDistance;
+                // Calculate new position (opposite direction from cursor)
+                let newX = rect.left - normX * moveDistance;
+                let newY = rect.top - normY * moveDistance;
 
-               // Keep within screen bounds
-               const padding = 20;
-               const maxX = window.innerWidth - rect.width - padding;
-               const maxY = window.innerHeight - rect.height - padding;
-               const minX = padding;
-               const minY = padding;
+                // Strict boundary checks to keep button ALWAYS on screen
+                const padding = 10;
+                const maxX = window.innerWidth - rect.width - padding;
+                const maxY = window.innerHeight - rect.height - padding;
 
-               // Strict boundary enforcement
-               if (newX < minX) newX = minX + 50;
-               if (newX > maxX) newX = maxX - 50;
-               if (newY < minY) newY = minY + 50;
-               if (newY > maxY) newY = maxY - 50;
+                // Clamp values to ensure button stays visible
+                newX = Math.max(padding, Math.min(newX, maxX));
+                newY = Math.max(padding, Math.min(newY, maxY));
 
-               // Apply position
-               btnNo.style.position = 'fixed';
-               btnNo.style.left = newX + 'px';
-               btnNo.style.top = newY + 'px';
-               btnNo.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;
+                // Apply new position
+                btnNo.style.position = 'fixed';
+                btnNo.style.left = newX + 'px';
+                btnNo.style.top = newY + 'px';
+                btnNo.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+                
+                // Ensure visibility
+                btnNo.style.display = 'inline-block';
+                btnNo.style.visibility = 'visible';
+                btnNo.style.opacity = '1';
 
-               // Occasional sound
-               if (isAudioStarted && Math.random() > 0.8) {
-                   const boing = new Tone.MembraneSynth().toDestination();
-                   boing.volume.value = -25;
-                   boing.triggerAttackRelease("G1", "32n");
-               }
-           }
-       }
+                if (isAudioStarted && Math.random() > 0.7) {
+                    const boing = new Tone.MembraneSynth().toDestination();
+                    boing.volume.value = -20;
+                    boing.triggerAttackRelease("G2", "32n");
+                }
+            }
+        }
 
-       btnYes.addEventListener('click', () => {
-           page2.style.display = 'none';
-           page3.style.display = 'flex';
-           page3.classList.remove('hidden');
-           
-           fireConfetti();
-           playSuccessMusic();
-           
-           setTimeout(() => {
-               speakLoveMessage();
-           }, 800);
-       });
+        btnYes.addEventListener('click', () => {
+            page2.style.display = 'none';
+            page3.style.display = 'flex';
+            page3.classList.remove('hidden');
+            
+            fireConfetti();
+            playSuccessMusic();
+            
+            setTimeout(() => {
+                speakLoveMessage();
+            }, 800);
+        });
 
-       function fireConfetti() {
-           const colors = ['#ff0000', '#ff69b4', '#ffffff', '#ffd700'];
-           for (let i = 0; i < 100; i++) {
-               const confetti = document.createElement('div');
-               confetti.style.position = 'fixed';
-               confetti.style.left = Math.random() * 100 + 'vw';
-               confetti.style.top = '-10px';
-               confetti.style.width = Math.random() * 10 + 5 + 'px';
-               confetti.style.height = Math.random() * 10 + 5 + 'px';
-               confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-               confetti.style.zIndex = '100';
-               confetti.style.transition = 'top 3s linear, transform 3s linear';
-               document.body.appendChild(confetti);
+        function fireConfetti() {
+            const colors = ['#ff0000', '#ff69b4', '#ffffff', '#ffd700'];
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.zIndex = '100';
+                confetti.style.transition = 'top 3s linear, transform 3s linear';
+                document.body.appendChild(confetti);
 
-               setTimeout(() => {
-                   confetti.style.top = '110vh';
-                   confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-               }, 100);
+                setTimeout(() => {
+                    confetti.style.top = '110vh';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                }, 100);
 
-               setTimeout(() => confetti.remove(), 3000);
-           }
-       }
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
 
-       document.body.addEventListener('click', initAudio, { once: true });
-       document.body.addEventListener('touchstart', initAudio, { once: true });
+        document.body.addEventListener('click', initAudio, { once: true });
+        document.body.addEventListener('touchstart', initAudio, { once: true });
 
-   </script>
+    </script>
 </body>
 </html>
